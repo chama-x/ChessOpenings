@@ -1,31 +1,32 @@
-import Select from 'react-select';
+import Select from 'react-select'
 
-import { useSettings } from '../../context/settings-context';
-import { Modal } from '../utils/Modal';
-import { Radio } from '../utils/Radio';
+import { useSettings } from '../../context/settings-context'
+import { Modal } from '../utils/Modal'
+import { Radio } from '../utils/Radio'
 
 export function SettingsModal({ setShowSettingsModal }) {
-  const { animationsOn, soundsOn, theme, themes, updateAnimationsOn, updateSoundsOn, updateTheme } = useSettings();
+  const { animationsOn, soundsOn, theme, themes, updateAnimationsOn, updateSoundsOn, updateTheme } =
+    useSettings()
 
   const onOffChoices = [
     {
       label: 'On',
-      value: true
+      value: true,
     },
     {
       label: 'Off',
-      value: false
-    }
-  ];
+      value: false,
+    },
+  ]
 
   const currentTheme = {
     label: theme,
-    value: theme
-  };
+    value: theme,
+  }
   const themeChoices = themes.map((t) => ({
     label: t,
-    value: t
-  }));
+    value: t,
+  }))
 
   return (
     <Modal title="Settings" onClose={() => setShowSettingsModal(false)}>
@@ -81,5 +82,5 @@ export function SettingsModal({ setShowSettingsModal }) {
         ))}
       </div> */}
     </Modal>
-  );
+  )
 }

@@ -1,44 +1,46 @@
-import Select from 'react-select';
+import Select from 'react-select'
 
-import { colourChoices, formatGroupLabel } from '../../data/consts';
-import { useChessboard } from '../../context/board-context';
-import { useData } from '../../context/data-context';
-import { useWindowSize } from '../../functions/hooks';
+import { colourChoices, formatGroupLabel } from '../../data/consts'
+import { useChessboard } from '../../context/board-context'
+import { useData } from '../../context/data-context'
+import { useWindowSize } from '../../functions/hooks'
 
 export function TrainSelectOptions({ selectedOpenings, setCanRetry, setSelectedOpenings }) {
-  const { windowSize } = useWindowSize();
-  const { openingGroups } = useData();
-  const { setBoardOrientation, reset, setUserColor, userColor } = useChessboard();
+  const { windowSize } = useWindowSize()
+  const { openingGroups } = useData()
+  const { setBoardOrientation, reset, setUserColor, userColor } = useChessboard()
 
   function filterOptions({ label, value }, searchInput) {
-    const searchLower = searchInput.toLocaleLowerCase();
+    const searchLower = searchInput.toLocaleLowerCase()
     // default search
-    if (label.toLocaleLowerCase().includes(searchLower)) return true;
+    if (label.toLocaleLowerCase().includes(searchLower)) return true
 
     // check if a group has the filter string as label
-    const groupOptions = openingGroups.filter((group) => group.label.toLocaleLowerCase().includes(searchLower));
+    const groupOptions = openingGroups.filter((group) =>
+      group.label.toLocaleLowerCase().includes(searchLower)
+    )
 
     if (groupOptions) {
       for (const groupOption of groupOptions) {
         // Check if current option is in group
-        const option = groupOption.options.find((opt) => opt.value === value);
+        const option = groupOption.options.find((opt) => opt.value === value)
         if (option) {
-          return true;
+          return true
         }
       }
     }
-    return false;
+    return false
   }
 
   function handleUserColorChange(change) {
-    setUserColor(change.value);
-    setBoardOrientation(change.value); // once autoflipping setting is added, can optionally do this or not
-    reset();
+    setUserColor(change.value)
+    setBoardOrientation(change.value) // once autoflipping setting is added, can optionally do this or not
+    reset()
   }
 
   function handleTrainOpeningChange(change) {
-    setSelectedOpenings(change ? [...change] : []);
-    setCanRetry(false);
+    setSelectedOpenings(change ? [...change] : [])
+    setCanRetry(false)
   }
 
   return (
@@ -68,5 +70,5 @@ export function TrainSelectOptions({ selectedOpenings, setCanRetry, setSelectedO
         />
       </div>
     </>
-  );
+  )
 }

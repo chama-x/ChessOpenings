@@ -28,24 +28,20 @@ export function NavbarLogo() {
   const path = pathname.split('/')?.[1];
 
   return (
-    <div className="flex p-2 pr-0 sm:p-2 w-1/2 md:w-1/3">
-      <Link href="/">
-        <a className="flex text-fg-primary hover:text-theme">
-          <div className="flex justify-center">
-            <div className="w-8 sm:w-14">
-              <Logo />
-            </div>
+    <div className="w-1/2 p-2 pr-0 sm:p-2 md:w-1/3">
+      <Link href="/" className="flex text-fg-primary hover:text-theme">
+        <div className="flex justify-center">
+          <div className="w-8 sm:w-14">
+            <Logo />
           </div>
-          <h1 className="text-md xl:text-2xl my-auto ml-2 sm:mx-2">ChessOpenings</h1>
-        </a>
+        </div>
+        <h1 className="my-auto ml-2 sm:mx-2 xl:text-2xl">ChessOpenings</h1>
       </Link>
       {pathname !== '/' && (
-        <div className="hidden lg:flex ">
-          <span className="text-md xl:text-3xl my-auto text-fg-primary">•</span>
-          <Link href={`/${path}`}>
-            <a className="flex justify-center text-fg-primary hover:text-theme">
-              <h2 className="text-md xl:text-2xl my-auto mx-2">{path}</h2>
-            </a>
+        <div className="hidden lg:flex">
+          <span className="my-auto text-fg-primary xl:text-3xl">•</span>
+          <Link href={`/${path}`} className="flex justify-center text-fg-primary hover:text-theme">
+            <h2 className="mx-2 my-auto xl:text-2xl">{path}</h2>
           </Link>
         </div>
       )}
@@ -53,68 +49,56 @@ export function NavbarLogo() {
   );
 }
 
-function NavbarLink({ icon, path, tooltip, isEndLink }) {
+export function NavbarLink({ icon: Icon, path, tooltip, isEndLink }) {
   const { pathname } = useRouter();
-  const { windowSize } = useWindowSize();
-  const onPage = path === '/' ? pathname === path : pathname.includes(path);
-  let size = 30;
-  if (windowSize >= 1024) size = 36;
+  const onPage = pathname === path;
 
   return (
-    <Link href={path}>
-      <a
-        aria-label={`Link to ${tooltip}`}
-        className={`${onPage ? 'fill-theme' : 'fill-fg-primary'} hover:fill-theme mx-2 ${isEndLink ? '' : 'w-1/5'}`}
-      >
-        <ReactTooltip
-          id={`navbar-link-${tooltip}`}
-          place="bottom"
-          effect="solid"
-          backgroundColor="black"
-          offset={{ top: 20 }}
-        />
-        <div
-          className={`mx-auto h-14 md:h-20 border-t-4 border-b-4 border-t-secondary ${
-            onPage ? 'border-b-theme' : 'border-b-secondary'
-          }`}
-          data-for={`navbar-link-${tooltip}`}
-          data-tip={tooltip}
+    <Link
+      href={path}
+      className={`mx-auto flex h-14 items-center border-b-4 border-t-4 border-t-secondary md:h-20 ${
+        onPage ? 'border-b-theme' : 'border-b-secondary'
+      }`}
+      data-for={`navbar-link-${path.slice(1) || 'home'}`}
+      data-tip={tooltip}
+    >
+      <ReactTooltip
+        id={`navbar-link-${path.slice(1) || 'home'}`}
+        place="bottom"
+        effect="solid"
+        backgroundColor="black"
+        offset={{ top: 20 }}
+      />
+      {Icon && (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 0 24 24"
+          width="24"
+          className={`mx-auto ${isEndLink ? 'fill-gray-500' : onPage ? 'fill-theme' : 'fill-fg-primary'}`}
         >
-          <svg
-            className="mx-auto h-full"
-            xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-          >
-            {icon}
-          </svg>
-        </div>
-      </a>
+          {Icon()}
+        </svg>
+      )}
     </Link>
   );
 }
 
-function NavbarBurgerLink({ icon, label, onClick, path }) {
-  const { pathname } = useRouter();
-  const { windowSize } = useWindowSize();
-  const onPage = path === '/' ? pathname === path : pathname.includes(path);
-  let size = 30;
-  if (windowSize >= 1024) size = 36;
-
+function NavbarBurgerLink({ icon: Icon, path, label, onClick }) {
   return (
-    <Link href={path}>
-      <a
-        className={`flex justify-center items-center hover:fill-theme hover:text-theme py-4 ${
-          onPage ? 'fill-theme text-theme' : 'fill-fg-primary text-fg-primary'
-        } `}
-        onClick={onClick}
-      >
-        <svg className="h-full mr-4" xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24">
-          {icon}
+    <Link href={path} onClick={onClick}>
+      <div className="cursor-pointer items-center justify-center fill-fg-primary py-4 hover:fill-theme hover:text-theme">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="24"
+          viewBox="0 0 24 24"
+          width="24"
+          className="fill-gray-500 mr-4"
+        >
+          {Icon()}
         </svg>
         <p className="text-2xl">{label}</p>
-      </a>
+      </div>
     </Link>
   );
 }
@@ -123,10 +107,18 @@ export function NavbarCenterLinks() {
   const { pathname } = useRouter();
 
   return (
-    <div className="hidden md:flex just w-1/3 h-full">
+    <div className="just hidden h-full w-1/3 md:flex">
       <NavbarLink icon={pathname === '/' ? homeFilled : homeOutlined} path="/" tooltip="Home" />
-      <NavbarLink icon={pathname === '/learn' ? learnFilled : learnOutlined} path="/learn" tooltip="Learn" />
-      <NavbarLink icon={pathname === '/train' ? trainFilled : trainOutlined} path="/train" tooltip="Train" />
+      <NavbarLink
+        icon={pathname === '/learn' ? learnFilled : learnOutlined}
+        path="/learn"
+        tooltip="Learn"
+      />
+      <NavbarLink
+        icon={pathname === '/train' ? trainFilled : trainOutlined}
+        path="/train"
+        tooltip="Train"
+      />
       <NavbarLink
         icon={pathname === '/traps' ? trapsFilled : trapsOutlined}
         path="/traps"
@@ -149,34 +141,24 @@ export function NavbarEndLinks({ menuOpen, setMenuOpen, setShowSettingsModal }) 
   if (windowSize >= 1024) size = 36;
 
   return (
-    <div className="flex justify-end items-center w-1/2 md:w-1/3 mr-2 md:mr-0">
+    <div className="mr-2 flex w-1/2 items-center justify-end md:mr-0 md:w-1/3">
       <NavbarAuthButton />
-      <div className="hidden sm:flex items-center">
-        <NavbarLink icon={pathname === '/help' ? helpFilled : helpOutlined} path="/help" tooltip="Help" isEndLink />
-        <ReactTooltip
-          id="navbar-link-settings"
-          place="bottom"
-          effect="solid"
-          backgroundColor="black"
-          offset={{ top: 20 }}
+      <div className="items-center sm:flex">
+        <NavbarLink
+          icon={pathname === '/help' ? helpFilled : helpOutlined}
+          path="/help"
+          tooltip="Help"
+          isEndLink
         />
-        <div
-          className="fill-fg-primary hover:fill-theme cursor-pointer mx-2 h-14 md:h-20"
-          data-tip="Settings"
-          data-for="navbar-link-settings"
-          onClick={() => {
-            setShowSettingsModal(true);
-            setMenuOpen(false);
-          }}
-        >
+        <div className="hover:bg-gray-100 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full">
           <svg
-            className="mx-auto h-full"
             xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
+            height="24"
             viewBox="0 0 24 24"
+            width="24"
+            className="fill-gray-500"
           >
-            {settingsOutlined}
+            {settingsOutlined()}
           </svg>
         </div>
       </div>
@@ -196,38 +178,34 @@ function NavbarAuthButton() {
   }
 
   return userData ? (
-    <Link href={`/user/${userData.uid}`}>
-      <a className="mx-2">
-        <ReactTooltip
-          id="navbar-link-profile"
-          place="bottom"
-          effect="solid"
-          backgroundColor="black"
-          offset={{ top: 20 }}
+    <Link href={`/user/${userData.uid}`} className="mx-2">
+      <ReactTooltip
+        id="navbar-link-profile"
+        place="bottom"
+        effect="solid"
+        backgroundColor="black"
+        offset={{ top: 20 }}
+      />
+      <div
+        className={`mx-auto flex h-14 items-center border-b-4 border-t-4 border-t-secondary md:h-20 ${
+          onPage ? 'border-b-theme' : 'border-b-secondary'
+        }`}
+        data-for="navbar-link-profile"
+        data-tip="Profile"
+      >
+        <img
+          className="border-4 border-secondary object-cover hover:border-2"
+          src={userData?.displayPictureURL || '/media/images/default.png'}
+          alt="default user"
+          width={40}
+          height={40}
         />
-        <div
-          className={`flex items-center mx-auto h-14 md:h-20 border-t-4 border-b-4 border-t-secondary ${
-            onPage ? 'border-b-theme' : 'border-b-secondary'
-          }`}
-          data-for="navbar-link-profile"
-          data-tip="Profile"
-        >
-          <img
-            className="rounded-full object-cover border-4 border-secondary hover:border-2"
-            src={userData?.displayPictureURL || '/media/images/default.png'}
-            alt="default user"
-            width={40}
-            height={40}
-          />
-        </div>
-      </a>
+      </div>
     </Link>
   ) : (
     pathname !== '/sign-in' && (
-      <Link href="/sign-in">
-        <a className="mr-2">
-          <Button>Sign In</Button>
-        </a>
+      <Link href="/sign-in" className="mr-2">
+        <Button>Sign In</Button>
       </Link>
     )
   );
@@ -240,7 +218,7 @@ export function NavbarBurgerMenuButton({ menuOpen, setMenuOpen }) {
 
   return (
     <button
-      className="w-7 h-6 relative flex md:hidden cursor-pointer mx-2 mt-2"
+      className="relative mx-2 mt-2 flex h-6 w-7 cursor-pointer md:hidden"
       type="button"
       onClick={() => setMenuOpen(!menuOpen)}
       onMouseEnter={() => setHover(true)}
@@ -272,8 +250,8 @@ export function NavbarBurgerMenu({ menuOpen, setMenuOpen, setShowSettingsModal }
   return (
     <>
       <div
-        className={`overflow-hidden absolute w-full bg-secondary transition-[max-height] ${
-          menuOpen ? 'duration-500 max-h-full' : 'duration-200 max-h-0'
+        className={`absolute w-full overflow-hidden bg-secondary transition-[max-height] ${
+          menuOpen ? 'max-h-full duration-500' : 'max-h-0 duration-200'
         }`}
       >
         <NavbarBurgerLink
@@ -313,22 +291,24 @@ export function NavbarBurgerMenu({ menuOpen, setMenuOpen, setShowSettingsModal }
           onClick={() => setMenuOpen(false)}
         />
         <div
-          className="flex justify-center items-center fill-fg-primary hover:fill-theme hover:text-theme cursor-pointer py-4"
+          className="cursor-pointer items-center justify-center fill-fg-primary py-4 hover:fill-theme hover:text-theme"
           onClick={() => {
             setShowSettingsModal(true);
             setMenuOpen(false);
           }}
         >
-          <svg
-            className="h-full mr-4"
-            xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-          >
-            {settingsOutlined}
-          </svg>
-          <p className="text-2xl">Settings</p>
+          <div className="hover:bg-gray-100 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="24"
+              viewBox="0 0 24 24"
+              width="24"
+              className="fill-gray-500"
+            >
+              {settingsOutlined()}
+            </svg>
+          </div>
+          <p className="ml-2 text-2xl">Settings</p>
         </div>
       </div>
     </>

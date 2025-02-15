@@ -1,70 +1,70 @@
-import { useEffect, useState } from 'react';
-import { signOut } from 'firebase/auth';
-import Router, { useRouter } from 'next/router';
+import { useEffect, useState } from 'react'
+import { signOut } from 'firebase/auth'
+import Router, { useRouter } from 'next/router'
 
-import { auth } from '../../firebase';
-import { useData } from '../../context/data-context';
-import { Button, WarningButton } from '../../components/utils/Button';
-import { ChangePasswordModal } from '../../components/modals/ChangePasswordModal';
-import { DeleteAccountModal } from '../../components/modals/DeleteAccountModal';
-import { SEO } from '../../components/utils/SEO';
-import { UserBaseStats } from '../../components/user/UserBaseStats';
-import { UserLoading } from '../../components/user/UserLoading';
-import { UserProfileHeader } from '../../components/user/UserProfileHeader';
-import { VerifyEmailModal } from '../../components/modals/VerifyEmailModal';
-import { UserContributions } from '../../components/user/UserContributions';
-import { UserStats } from '../../components/user/UserStats';
+import { auth } from '../../firebase'
+import { useData } from '../../context/data-context'
+import { Button, WarningButton } from '../../components/utils/Button'
+import { ChangePasswordModal } from '../../components/modals/ChangePasswordModal'
+import { DeleteAccountModal } from '../../components/modals/DeleteAccountModal'
+import { SEO } from '../../components/utils/SEO'
+import { UserBaseStats } from '../../components/user/UserBaseStats'
+import { UserLoading } from '../../components/user/UserLoading'
+import { UserProfileHeader } from '../../components/user/UserProfileHeader'
+import { VerifyEmailModal } from '../../components/modals/VerifyEmailModal'
+import { UserContributions } from '../../components/user/UserContributions'
+import { UserStats } from '../../components/user/UserStats'
 
 export default function User() {
   // user is the auth data of signed in user, loadedUser is any user data
-  const { loadingError, submissions, setLoadingError, user, userData } = useData();
-  const [loadedUser, setLoadedUser] = useState();
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [showVerifyModal, setShowVerifyModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { loadingError, submissions, setLoadingError, user, userData } = useData()
+  const [loadedUser, setLoadedUser] = useState()
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showVerifyModal, setShowVerifyModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
   const {
-    query: { uid }
-  } = useRouter();
+    query: { uid },
+  } = useRouter()
 
-  const submissionsByUser = submissions?.filter((s) => s.contributor === uid) || [];
-  const contributions = submissionsByUser.filter((s) => s.status === 'MERGED');
+  const submissionsByUser = submissions?.filter((s) => s.contributor === uid) || []
+  const contributions = submissionsByUser.filter((s) => s.status === 'MERGED')
 
   useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await fetch(`/api/user/${uid}`);
-        const resJson = await response.json();
+        const response = await fetch(`/api/user/${uid}`)
+        const resJson = await response.json()
         if (response?.ok) {
-          setLoadedUser(resJson.body);
+          setLoadedUser(resJson.body)
         } else {
           // can't find user
-          Router.push('/');
+          Router.push('/')
         }
       } catch (error) {
         setLoadingError(
           `Oops, something went wrong fetching user information: ${JSON.stringify(error)}. Please try again later.`
-        );
+        )
       }
     }
 
     // only fetch user if we don't already have that data
     if (uid) {
-      if (userData?.uid === uid) setLoadedUser(userData);
-      else fetchUserData();
+      if (userData?.uid === uid) setLoadedUser(userData)
+      else fetchUserData()
     }
-  }, [setLoadingError, uid, userData]);
+  }, [setLoadingError, uid, userData])
 
   async function handleSignOut() {
-    await signOut(auth);
-    Router.push('/sign-in');
+    await signOut(auth)
+    Router.push('/sign-in')
   }
 
   if (!loadedUser) {
-    return <UserLoading />;
+    return <UserLoading />
   }
 
   if (loadingError) {
-    return <div>Error</div>;
+    return <div>Error</div>
   }
 
   return (
@@ -75,7 +75,7 @@ export default function User() {
         path="/user"
       />
 
-      <div className="my-8 bg-secondary rounded-lg p-4 md:p-8">
+      <div className="my-8 rounded-lg bg-secondary p-4 md:p-8">
         <UserProfileHeader
           contributions={contributions}
           loadedUser={loadedUser}
@@ -84,8 +84,12 @@ export default function User() {
         />
       </div>
 
-      <div className="mb-8 bg-secondary rounded-lg p-4 md:hidden">
-        <UserBaseStats contributions={contributions} loadedUser={loadedUser} submissionsByUser={submissionsByUser} />
+      <div className="mb-8 rounded-lg bg-secondary p-4 md:hidden">
+        <UserBaseStats
+          contributions={contributions}
+          loadedUser={loadedUser}
+          submissionsByUser={submissionsByUser}
+        />
       </div>
 
       {/* {user?.uid !== loadedUser.uid && (
@@ -95,22 +99,22 @@ export default function User() {
       )} */}
 
       {contributions.length > 0 && (
-        <div className="mb-8 bg-secondary rounded-lg p-4 md:p-8">
-          <h3 className="text-lg sm:text-xl md:text-2xl my-2">Latest Contributions</h3>
+        <div className="mb-8 rounded-lg bg-secondary p-4 md:p-8">
+          <h3 className="my-2 text-lg sm:text-xl md:text-2xl">Latest Contributions</h3>
           <UserContributions contributions={contributions} />
         </div>
       )}
 
-      <div className="mb-8 bg-secondary rounded-lg p-4 md:p-8">
-        <h3 className="text-lg sm:text-xl md:text-2xl my-2">Statistics</h3>
+      <div className="mb-8 rounded-lg bg-secondary p-4 md:p-8">
+        <h3 className="my-2 text-lg sm:text-xl md:text-2xl">Statistics</h3>
         <UserStats stats={loadedUser.stats} />
       </div>
 
-      <div className="mb-8 bg-secondary rounded-lg p-4 md:p-8">
-        <h3 className="text-lg sm:text-xl md:text-2xl my-2">Achievements</h3>
+      <div className="mb-8 rounded-lg bg-secondary p-4 md:p-8">
+        <h3 className="my-2 text-lg sm:text-xl md:text-2xl">Achievements</h3>
         <p>
-          Coming Soon - Don&apos;t worry, you won&apos;t miss any achievements as they will be automatically added when
-          introduced.
+          Coming Soon - Don&apos;t worry, you won&apos;t miss any achievements as they will be
+          automatically added when introduced.
         </p>
       </div>
 
@@ -157,35 +161,35 @@ export default function User() {
         - successfully have content merged
       */}
 
-      <div className="mb-8 bg-secondary rounded-lg p-4 md:p-8">
-        <h3 className="text-lg sm:text-xl md:text-2xl my-2">Following</h3>
+      <div className="mb-8 rounded-lg bg-secondary p-4 md:p-8">
+        <h3 className="my-2 text-lg sm:text-xl md:text-2xl">Following</h3>
         <p>Coming Soon - Follow Users to see their repertoires.</p>
       </div>
 
       {user?.uid === uid && (
-        <div className="mb-8 bg-secondary rounded-lg p-4 md:p-8">
-          <h3 className="text-lg sm:text-xl md:text-2xl my-2">Account Management</h3>
+        <div className="mb-8 rounded-lg bg-secondary p-4 md:p-8">
+          <h3 className="my-2 text-lg sm:text-xl md:text-2xl">Account Management</h3>
           <div className="flex flex-wrap">
-            <div className="mb-4 md:pr-2 w-full md:w-1/2 xl:w-1/4">
+            <div className="mb-4 w-full md:w-1/2 md:pr-2 xl:w-1/4">
               <Button fill onClick={handleSignOut}>
                 Sign Out
               </Button>
             </div>
             {user.providerData[0].providerId === 'password' && (
-              <div className="mb-4 md:pl-2 xl:px-2 w-full md:w-1/2 xl:w-1/4">
+              <div className="mb-4 w-full md:w-1/2 md:pl-2 xl:w-1/4 xl:px-2">
                 <Button fill onClick={() => setShowPasswordModal(true)}>
                   Change Password
                 </Button>
               </div>
             )}
             {!user.emailVerified && (
-              <div className="mb-4 md:pl-2 xl:px-2 w-full md:w-1/2 xl:w-1/4">
+              <div className="mb-4 w-full md:w-1/2 md:pl-2 xl:w-1/4 xl:px-2">
                 <Button fill onClick={() => setShowVerifyModal(true)}>
                   Verify Email Address
                 </Button>
               </div>
             )}
-            <div className="mb-4 md:pl-2 w-full md:w-1/2 xl:w-1/4">
+            <div className="mb-4 w-full md:w-1/2 md:pl-2 xl:w-1/4">
               <WarningButton fill onClick={() => setShowDeleteModal(true)}>
                 Delete Account
               </WarningButton>
@@ -198,5 +202,5 @@ export default function User() {
       {showVerifyModal && <VerifyEmailModal setShowModal={setShowVerifyModal} />}
       {showDeleteModal && <DeleteAccountModal setShowModal={setShowDeleteModal} />}
     </div>
-  );
+  )
 }

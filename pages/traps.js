@@ -1,17 +1,17 @@
-import { trapsOutlined } from '../data/icons';
-import { useData } from '../context/data-context';
-import { Header } from '../components/utils/Header';
-import { LoadingSpinner } from '../components/utils/LoadingSpinner';
-import { OpeningsList } from '../components/learn/OpeningsList';
-import { SEO } from '../components/utils/SEO';
-import { Logo } from '../components/utils/Logo';
+import { trapsOutlined } from '../data/icons'
+import { useData } from '../context/data-context'
+import { Header } from '../components/utils/Header'
+import { LoadingSpinner } from '../components/utils/LoadingSpinner'
+import { OpeningsList } from '../components/learn/OpeningsList'
+import { SEO } from '../components/utils/SEO'
+import { Logo } from '../components/utils/Logo'
 
 export default function Traps() {
-  const { traps, loadingError } = useData();
+  const { traps, loadingError } = useData()
 
   // TODO: Make error component
   if (loadingError) {
-    return <div>Error</div>;
+    return <div>Error</div>
   }
 
   return (
@@ -25,7 +25,7 @@ export default function Traps() {
       {traps ? (
         <OpeningsList groups={traps} type="traps" />
       ) : (
-        <div className="flex justify-center h-full">
+        <div className="flex h-full justify-center">
           <LoadingSpinner
             img={
               <div className="w-24">
@@ -37,5 +37,5 @@ export default function Traps() {
         </div>
       )}
     </div>
-  );
+  )
 }

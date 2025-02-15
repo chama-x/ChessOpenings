@@ -1,51 +1,26 @@
-import admin from 'firebase-admin';
+import { db } from '@/lib/firebase'
+import { doc, getDoc } from 'firebase/firestore'
 
-import { auth, storage } from '../../../firebaseAdmin';
-
-export default async (req, res) => {
-  let statusCode = 500;
-  let responseBody = { error: 'Internal Server Error: Encountered an unknown error' };
-
-  if (
-    !req.headers.referer.includes('http://localhost:3000') &&
-    !req.headers.referer.includes('https://chessopenings.co.uk')
-  ) {
-    res.statusCode = 401;
-    res.json({ error: 'Unauthorized: Unauthorized host' });
-    return res;
+const handler = async (req, res) => {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' })
   }
 
-  // check admin token
-  const idToken = JSON.parse(req.cookies?.idToken);
-  const decodedToken = await auth.verifyIdToken(idToken);
-  const uid = decodedToken.uid;
-  if (uid !== process.env.ADMIN_UID) {
-    res.statusCode = 401;
-    res.json({ error: 'Unauthorized: Invalid Token.' });
-    return;
-  }
+  const { id } = req.query
 
   try {
-    await storage
-      .collection('data')
-      .doc('traps')
-      .update({
-        data: admin.firestore.FieldValue.arrayUnion(
-          ...[
-            {
-              ...JSON.parse(req.body),
-              timestamp: admin.firestore.Timestamp.now()
-            }
-          ]
-        )
-      });
-    statusCode = 200;
-    responseBody = { title: 'Success' };
-  } catch (error) {
-    statusCode = 500;
-    responseBody = { error: `Internal Server Error: Error updating Firestore. ${error.message}` };
-  }
+    const docRef = doc(db, 'traps', id)
+    const docSnap = await getDoc(docRef)
 
-  res.statusCode = statusCode;
-  res.json(responseBody);
-};
+    if (!docSnap.exists()) {
+      return res.status(404).json({ message: 'Trap not found' })
+    }
+
+    const data = docSnap.data()
+    return res.status(200).json(data)
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching trap' })
+  }
+}
+
+export default handler

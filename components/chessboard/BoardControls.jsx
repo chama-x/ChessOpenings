@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
-import { flipArrow, hintsFilled, hintsOutlined, leftArrow, playArrow, replayArrow, rightArrow } from '../../data/icons';
-import { start } from '../../data/consts';
-import { useChessboard } from '../../context/board-context';
-import { SVG } from '../utils/SVG';
+import {
+  flipArrow,
+  hintsFilled,
+  hintsOutlined,
+  leftArrow,
+  playArrow,
+  replayArrow,
+  rightArrow,
+} from '../../data/icons'
+import { start } from '../../data/consts'
+import { useChessboard } from '../../context/board-context'
+import { SVG } from '../utils/SVG'
 
 export function BoardControls({ resetDisabled }) {
   const {
@@ -22,115 +30,118 @@ export function BoardControls({ resetDisabled }) {
     setRedoStack,
     setShowHints,
     showHints,
-    userColor
-  } = useChessboard();
-  const { pathname } = useRouter();
-  const [keyDown, setKeyDown] = useState();
-  const [resumeDisabled, setResumeDisabled] = useState(true);
+    userColor,
+  } = useChessboard()
+  const { pathname } = useRouter()
+  const [keyDown, setKeyDown] = useState()
+  const [resumeDisabled, setResumeDisabled] = useState(true)
 
-  const backDisabled = game?.fen() === start || (game?.history().length === 1 && userColor === 'black');
-  const forwardDisabled = redoStack.length === 0;
+  const backDisabled =
+    game?.fen() === start || (game?.history().length === 1 && userColor === 'black')
+  const forwardDisabled = redoStack.length === 0
 
   // Add event listeners
   useEffect(() => {
-    window.addEventListener('keydown', downHandler);
-    window.addEventListener('keyup', upHandler);
+    window.addEventListener('keydown', downHandler)
+    window.addEventListener('keyup', upHandler)
     return () => {
-      window.removeEventListener('keydown', downHandler);
-      window.removeEventListener('keyup', upHandler);
-    };
-  }, []);
+      window.removeEventListener('keydown', downHandler)
+      window.removeEventListener('keyup', upHandler)
+    }
+  }, [])
 
   useEffect(() => {
-    setResumeDisabled(opening?.value[game.history().length] === undefined || pathname.includes('/submissions'));
-  }, [opening, game, pathname]);
+    setResumeDisabled(
+      opening?.value[game.history().length] === undefined || pathname.includes('/submissions')
+    )
+  }, [opening, game, pathname])
 
   useEffect(() => {
     // needs some more logic for when multiple are set down, and for looping on hold
     if (keyDown === 'ArrowLeft') {
-      goBack();
+      goBack()
     } else if (keyDown === 'ArrowRight') {
-      goForward();
+      goForward()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [keyDown]);
+  }, [keyDown])
 
   function downHandler({ key }) {
     if (key === 'ArrowLeft' || key === 'ArrowRight') {
-      setKeyDown(key);
+      setKeyDown(key)
     }
   }
 
   function upHandler({ key }) {
     if (key === 'ArrowLeft' || key === 'ArrowRight') {
-      setKeyDown();
+      setKeyDown()
     }
   }
 
   function goBack() {
-    if (backDisabled) return;
-    const history = game.history({ verbose: true });
-    const lastMove = history[history.length - 1];
+    if (backDisabled) return
+    const history = game.history({ verbose: true })
+    const lastMove = history[history.length - 1]
 
-    setRedoStack((oldStack) => [...oldStack, lastMove]);
+    setRedoStack((oldStack) => [...oldStack, lastMove])
 
     safeGameMutate((game) => {
-      game.undo();
-    });
+      game.undo()
+    })
 
-    moveSounds.move.play();
-    setResumeDisabled(false);
+    moveSounds.move.play()
+    setResumeDisabled(false)
 
     if (pathname.includes('/learn') || pathname.includes('/traps')) {
       // colour move squares of move made 2 moves ago
-      const move = opening.value[history.length - 2];
+      const move = opening.value[history.length - 2]
       setMoveSquares({
         [move?.from]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },
-        [move?.to]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' }
-      });
-      return;
+        [move?.to]: { backgroundColor: 'rgba(255, 255, 0, 0.4)' },
+      })
+      return
     }
 
-    setMoveSquares({});
+    setMoveSquares({})
   }
 
   function goForward() {
-    if (forwardDisabled) return;
-    const redoMove = redoStack[redoStack.length - 1];
+    if (forwardDisabled) return
+    const redoMove = redoStack[redoStack.length - 1]
     setRedoStack((oldStack) => {
-      const newStack = [...oldStack];
-      newStack.pop();
-      return newStack;
-    });
+      const newStack = [...oldStack]
+      newStack.pop()
+      return newStack
+    })
 
-    if (!redoMove) return;
+    if (!redoMove) return
 
     safeGameMutate((game) => {
-      game.move(redoMove);
-    });
+      game.move(redoMove)
+    })
 
-    playSound('', redoMove);
+    playSound('', redoMove)
 
     setMoveSquares({
       [redoMove.from]: {
-        backgroundColor: 'rgba(255, 255, 0, 0.4)'
+        backgroundColor: 'rgba(255, 255, 0, 0.4)',
       },
       [redoMove.to]: {
-        backgroundColor: 'rgba(255, 255, 0, 0.4)'
-      }
-    });
+        backgroundColor: 'rgba(255, 255, 0, 0.4)',
+      },
+    })
   }
 
   function handleResume() {
-    setResumeDisabled(true);
-    resume();
+    setResumeDisabled(true)
+    resume()
   }
 
   return (
-    <div className="order-1 xl:order-2 bg-tertiary">
+    <div className="order-1 bg-tertiary xl:order-2">
       <div className="flex p-4">
         <button
-          className={`flex flex-col items-center w-1/3 cursor-pointer hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
+          className={`flex w-1/3 cursor-pointer flex-col items-center hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
           disabled={backDisabled}
           onClick={goBack}
         >
@@ -139,7 +150,7 @@ export function BoardControls({ resetDisabled }) {
         </button>
 
         <button
-          className={`flex flex-col items-center w-1/3 cursor-pointer hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
+          className={`flex w-1/3 cursor-pointer flex-col items-center hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
           disabled={resumeDisabled}
           onClick={handleResume}
         >
@@ -148,7 +159,7 @@ export function BoardControls({ resetDisabled }) {
         </button>
 
         <button
-          className={`flex flex-col items-center w-1/3 cursor-pointer hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
+          className={`flex w-1/3 cursor-pointer flex-col items-center hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
           disabled={forwardDisabled}
           onClick={goForward}
         >
@@ -159,7 +170,7 @@ export function BoardControls({ resetDisabled }) {
 
       <div className="flex p-4 ">
         <button
-          className="flex flex-col sm:flex-row justify-center items-center w-1/3 cursor-pointer hover:opacity-50"
+          className="flex w-1/3 cursor-pointer flex-col items-center justify-center hover:opacity-50 sm:flex-row"
           onClick={() => setBoardOrientation(boardOrientation === 'white' ? 'black' : 'white')}
         >
           <SVG icon={flipArrow} marginRight={2} />
@@ -167,7 +178,7 @@ export function BoardControls({ resetDisabled }) {
         </button>
 
         <button
-          className="flex flex-col sm:flex-row justify-center items-center w-1/3 cursor-pointer hover:opacity-50"
+          className="flex w-1/3 cursor-pointer flex-col items-center justify-center hover:opacity-50 sm:flex-row"
           onClick={() => setShowHints(!showHints)}
         >
           <SVG icon={showHints ? hintsFilled : hintsOutlined} marginRight={2} />
@@ -175,7 +186,7 @@ export function BoardControls({ resetDisabled }) {
         </button>
 
         <button
-          className={`flex flex-col sm:flex-row justify-center items-center w-1/3 cursor-pointer hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50`}
+          className={`flex w-1/3 cursor-pointer flex-col items-center justify-center hover:opacity-50 disabled:cursor-not-allowed disabled:opacity-50 sm:flex-row`}
           onClick={reset}
           disabled={resetDisabled}
         >
@@ -184,5 +195,5 @@ export function BoardControls({ resetDisabled }) {
         </button>
       </div>
     </div>
-  );
+  )
 }

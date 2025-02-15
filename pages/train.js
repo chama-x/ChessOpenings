@@ -1,7 +1,7 @@
-import { Chessboard } from '../components/chessboard/Chessboard';
-import { ChessboardWrapper } from '../components/chessboard/ChessboardWrapper';
-import { TrainSidePanel } from '../components/train/TrainSidePanel';
-import { SEO } from '../components/utils/SEO';
+import { Chessboard } from '../components/chessboard/Chessboard'
+import { ChessboardWrapper } from '../components/chessboard/ChessboardWrapper'
+import { TrainSidePanel } from '../components/train/TrainSidePanel'
+import { SEO } from '../components/utils/SEO'
 
 export default function Train() {
   return (
@@ -16,5 +16,5 @@ export default function Train() {
         <TrainSidePanel />
       </ChessboardWrapper>
     </>
-  );
+  )
 }

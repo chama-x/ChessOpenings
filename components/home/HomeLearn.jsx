@@ -1,16 +1,17 @@
-import { learnOutlined, popular } from '../../data/icons';
-import { useData } from '../../context/data-context';
-import { ErrorMessage } from '../utils/ErrorMessage';
-import { HomeCard } from './HomeCard';
-import { OpeningGroup } from '../learn/OpeningGroup';
+'use client'
+
+import { learnOutlined, popular } from '../../data/icons'
+import { useData } from '../../context/data-context'
+import { ErrorMessage } from '../utils/ErrorMessage'
+import { HomeCard } from './HomeCard'
+import { OpeningGroup } from '../learn/OpeningGroup'
 
 export function HomeLearn() {
-  const { openingGroups, loadingError } = useData();
+  const { openingGroups, loadingError } = useData()
 
-  let filteredOpeningGroups;
-  if (openingGroups) {
-    filteredOpeningGroups = [...openingGroups]?.sort((a, b) => -(a.options.length - b.options.length))?.slice(0, 4);
-  }
+  const filteredOpeningGroups = openingGroups
+    ? [...openingGroups].sort((a, b) => b.options.length - a.options.length).slice(0, 4)
+    : null
 
   return (
     <HomeCard
@@ -23,13 +24,15 @@ export function HomeLearn() {
       titleSecondary="Most Popular"
     >
       {loadingError && (
-        <ErrorMessage>There was an error when loading website data. Please try again later.</ErrorMessage>
+        <ErrorMessage>
+          There was an error when loading website data. Please try again later.
+        </ErrorMessage>
       )}
       <div className="flex flex-wrap">
-        {filteredOpeningGroups?.map((g) => (
-          <OpeningGroup key={g.label} group={g} type="learn" />
+        {filteredOpeningGroups?.map((group) => (
+          <OpeningGroup key={group.label} group={group} type="learn" />
         ))}
       </div>
     </HomeCard>
-  );
+  )
 }

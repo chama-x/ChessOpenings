@@ -1,6 +1,11 @@
 export function Logo() {
   return (
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" className="rounded-md">
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 300 300"
+      className="rounded-md"
+    >
       <path
         fill="var(--theme)"
         stroke="var(--theme)"
@@ -16,5 +21,5 @@ export function Logo() {
         d="M 139.5 17 L 160.5 17 L 167 22.5 L 168 24.5 L 168 71 L 210.5 71 L 217 76.5 L 218 78.5 L 218 103.5 L 214.5 108 L 210.5 110 L 168 110 L 168 153 L 184.5 153 L 194 160.5 L 196 171.5 L 195 174 Q 227.5 172.8 240 192.5 Q 245.9 202.3 248 215 Q 251.7 213.5 251 216.5 L 233 262.5 L 225 288.5 L 223 300 L 79.5 300 L 78 298.5 L 77 291.5 L 69 265.5 L 48 215 Q 53.6 217.2 52 211.5 Q 55.9 192.9 68.5 183 Q 81.1 172.9 104 174 L 104 164.5 L 109.5 156 L 115.5 153 L 131 153 L 131 110 L 88.5 110 L 83 105.5 L 81 101.5 L 81 79.5 L 85.5 73 L 89.5 71 L 131 71 L 131 25.5 L 135.5 19 L 139.5 17 Z "
       />
     </svg>
-  );
+  )
 }

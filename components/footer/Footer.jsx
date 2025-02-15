@@ -1,5 +1,5 @@
-import { LinkButton } from '../utils/Button';
-import { Logo } from '../utils/Logo';
+import { LinkButton } from '../utils/Button'
+import { Logo } from '../utils/Logo'
 import {
   FooterColumn,
   FooterCopyright,
@@ -9,19 +9,19 @@ import {
   FooterLinkedInLink,
   FooterRow,
   FooterSubHeading,
-  FooterTwitterLink
-} from './FooterComponents';
+  FooterTwitterLink,
+} from './FooterComponents'
 
 export function Footer() {
   return (
-    <div className="bg-secondary p-4 flex justify-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
+    <div className="flex justify-center bg-secondary p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]">
       <div className="container">
         <div className="flex flex-wrap justify-between">
           <div className="my-4 w-full xl:w-2/5">
             <FooterHeading>Welcome to ChessOpenings.co.uk</FooterHeading>
             <p className="my-1 text-base font-light">
-              This site and its contents are provided to you completely for free. If you enjoy and learn from it, please
-              consider donating to support the site and keep it running.
+              This site and its contents are provided to you completely for free. If you enjoy and
+              learn from it, please consider donating to support the site and keep it running.
             </p>
             <div className="my-4">
               <LinkButton link="/support">Support The Site</LinkButton>
@@ -62,9 +62,9 @@ export function Footer() {
           </FooterColumn>
         </div>
 
-        <div className="mt-8 lg:my-4 flex flex-wrap justify-between items-center">
+        <div className="mt-8 flex flex-wrap items-center justify-between lg:my-4">
           <FooterCopyright />
-          <div className="flex m-auto my-8 lg:m-0">
+          <div className="m-auto my-8 flex lg:m-0">
             <div className="w-8">
               <Logo />
             </div>
@@ -73,5 +73,5 @@ export function Footer() {
         </div>
       </div>
     </div>
-  );
+  )
 }

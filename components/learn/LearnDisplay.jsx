@@ -1,28 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Chess from 'chess.js';
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import Chess from 'chess.js'
 
-import { download, share } from '../../data/icons';
-import { scrollIntoView } from '../../functions/helpers';
-import { useChessboard } from '../../context/board-context';
-import { useWindowSize } from '../../functions/hooks';
-import { Collapsible } from '../utils/Collapsible';
-import { SVG } from '../utils/SVG';
-import { PGN } from '../utils/PGN';
+import { download, share } from '../../data/icons'
+import { scrollIntoView } from '../../functions/helpers'
+import { useChessboard } from '../../context/board-context'
+import { useWindowSize } from '../../functions/hooks'
+import { Collapsible } from '../utils/Collapsible'
+import { SVG } from '../utils/SVG'
+import { PGN } from '../utils/PGN'
 
 export function LearnDisplay({ openings }) {
-  const { windowSize } = useWindowSize();
-  const { game, opening, reset, setOpening, setUserColor, setBoardOrientation } = useChessboard();
-  const [openingLabelToCopy, setOpeningLabelToCopy] = useState();
-  const [openingPGNToCopy, setOpeningPGNToCopy] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [exported, setExported] = useState(false);
+  const { windowSize } = useWindowSize()
+  const { game, opening, reset, setOpening, setUserColor, setBoardOrientation } = useChessboard()
+  const [openingLabelToCopy, setOpeningLabelToCopy] = useState()
+  const [openingPGNToCopy, setOpeningPGNToCopy] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [exported, setExported] = useState(false)
   const {
     pathname,
-    query: { group }
-  } = useRouter();
+    query: { group },
+  } = useRouter()
 
-  const history = game?.history({ verbose: true });
+  const history = game?.history({ verbose: true })
 
   useEffect(() => {
     if (windowSize > 1599 && opening) {
@@ -30,9 +30,9 @@ export function LearnDisplay({ openings }) {
         document.getElementById('panel-scroll-display'),
         document.getElementById(`opening-collapsible-${opening.label}`),
         true
-      );
+      )
     }
-  }, [opening, windowSize]);
+  }, [opening, windowSize])
 
   useEffect(() => {
     if (openingLabelToCopy) {
@@ -40,52 +40,52 @@ export function LearnDisplay({ openings }) {
         `https://chessopenings.co.uk/${pathname.split('/')[1]}/${encodeURIComponent(
           group
         )}?openingLink=${encodeURIComponent(openingLabelToCopy)}`
-      );
-      setCopied(true);
-      setExported(false);
-      setOpeningLabelToCopy('');
+      )
+      setCopied(true)
+      setExported(false)
+      setOpeningLabelToCopy('')
     }
-  }, [openingLabelToCopy, group, pathname]);
+  }, [openingLabelToCopy, group, pathname])
 
   useEffect(() => {
     function handlePGN() {
-      const chess = new Chess();
-      chess.header('White', 'White', 'Black', 'Black');
+      const chess = new Chess()
+      chess.header('White', 'White', 'Black', 'Black')
       opening?.value.forEach((move) => {
-        chess.move({ from: move.from, to: move.to });
-      });
-      return chess.pgn();
+        chess.move({ from: move.from, to: move.to })
+      })
+      return chess.pgn()
     }
 
     if (openingPGNToCopy) {
-      navigator.clipboard.writeText(handlePGN());
-      setCopied(false);
-      setExported(true);
-      setOpeningPGNToCopy(false);
+      navigator.clipboard.writeText(handlePGN())
+      setCopied(false)
+      setExported(true)
+      setOpeningPGNToCopy(false)
     }
-  }, [openingPGNToCopy, opening]);
+  }, [openingPGNToCopy, opening])
 
   function handleLearnOpeningChange(o) {
     if (opening?.label === o.label) {
-      setOpening(null);
-      reset();
+      setOpening(null)
+      reset()
     } else {
-      setOpening(o);
+      setOpening(o)
       if (o.colour) {
-        setUserColor(o.colour);
-        setBoardOrientation(o.colour);
+        setUserColor(o.colour)
+        setBoardOrientation(o.colour)
       }
-      reset(true);
+      reset(true)
     }
   }
 
   if (!openings) {
-    return <div>Loading</div>;
+    return <div>Loading</div>
   }
 
   return (
     <>
-      <h2 className="text-theme text-xl text-center">{group}</h2>
+      <h2 className="text-center text-xl text-theme">{group}</h2>
       {openings.map((o) => (
         <Collapsible
           id={`opening-collapsible-${o.label}`}
@@ -97,7 +97,7 @@ export function LearnDisplay({ openings }) {
           <PGN opening={o} history={history} />
           <div className="my-4 text-lg">{o.description}</div>
           <div
-            className="my-2 py-2 flex justify-center rounded-md cursor-pointer hover:bg-tertiary"
+            className="my-2 flex cursor-pointer justify-center rounded-md py-2 hover:bg-tertiary"
             onClick={() => setOpeningLabelToCopy(o.label)}
           >
             <SVG icon={share} marginRight={2} size={24} />
@@ -105,7 +105,7 @@ export function LearnDisplay({ openings }) {
           </div>
 
           <div
-            className="my-2 py-2 flex justify-center rounded-md cursor-pointer hover:bg-tertiary"
+            className="my-2 flex cursor-pointer justify-center rounded-md py-2 hover:bg-tertiary"
             onClick={() => setOpeningPGNToCopy(true)}
           >
             <SVG icon={download} marginRight={2} size={24} />
@@ -114,5 +114,5 @@ export function LearnDisplay({ openings }) {
         </Collapsible>
       ))}
     </>
-  );
+  )
 }

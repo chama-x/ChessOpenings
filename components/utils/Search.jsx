@@ -1,15 +1,15 @@
-import { search } from '../../data/icons';
-import { SVG } from './SVG';
+import { search } from '../../data/icons'
+import { SVG } from './SVG'
 
 export function Search({ id, maxLength = 255, onChange, placeholder, value }) {
   return (
-    <div className="my-4 relative">
+    <div className="relative my-4">
       <span className="absolute p-2">
         <SVG icon={search} size={24} />
       </span>
       <input
         id={id}
-        className=" bg-secondary w-full pl-10 rounded-md leading-10"
+        className=" w-full rounded-md bg-secondary pl-10 leading-10"
         value={value}
         onChange={onChange}
         placeholder={placeholder}
@@ -17,5 +17,5 @@ export function Search({ id, maxLength = 255, onChange, placeholder, value }) {
         maxLength={maxLength}
       />
     </div>
-  );
+  )
 }

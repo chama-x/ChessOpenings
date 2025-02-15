@@ -1,17 +1,17 @@
-import { learnOutlined } from '../data/icons';
-import { useData } from '../context/data-context';
-import { Header } from '../components/utils/Header';
-import { LoadingSpinner } from '../components/utils/LoadingSpinner';
-import { OpeningsList } from '../components/learn/OpeningsList';
-import { SEO } from '../components/utils/SEO';
-import { Logo } from '../components/utils/Logo';
+import { learnOutlined } from '../data/icons'
+import { useData } from '../context/data-context'
+import { Header } from '../components/utils/Header'
+import { LoadingSpinner } from '../components/utils/LoadingSpinner'
+import { OpeningsList } from '../components/learn/OpeningsList'
+import { SEO } from '../components/utils/SEO'
+import { Logo } from '../components/utils/Logo'
 
 export default function Learn() {
-  const { openingGroups, loadingError } = useData();
+  const { openingGroups, loadingError } = useData()
 
   // TODO: Make error component
   if (loadingError) {
-    return <div>Error</div>;
+    return <div>Error</div>
   }
 
   return (
@@ -25,7 +25,7 @@ export default function Learn() {
       {openingGroups ? (
         <OpeningsList groups={openingGroups} type="learn" />
       ) : (
-        <div className="flex justify-center h-full">
+        <div className="flex h-full justify-center">
           <LoadingSpinner
             img={
               <div className="w-24">
@@ -37,5 +37,5 @@ export default function Learn() {
         </div>
       )}
     </div>
-  );
+  )
 }

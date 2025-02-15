@@ -1,34 +1,26 @@
-import { storage } from '../../../firebaseAdmin';
+import { db } from '@/lib/firebase'
+import { doc, getDoc } from 'firebase/firestore'
 
-export default async (req, res) => {
-  const { uid } = req.query;
-  let statusCode = 500;
-  let responseBody = { error: 'Internal Server Error: Encountered an unknown error' };
-
-  if (
-    !req.headers.referer.includes('http://localhost:3000') &&
-    !req.headers.referer.includes('https://chessopenings.co.uk')
-  ) {
-    res.statusCode = 401;
-    res.json({ error: 'Unauthorized: Unauthorized host' });
-    return res;
+const handler = async (req, res) => {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' })
   }
+
+  const { uid } = req.query
 
   try {
-    const doc = await storage.collection('users').doc(uid).get();
+    const docRef = doc(db, 'users', uid)
+    const docSnap = await getDoc(docRef)
 
-    if (doc.exists) {
-      statusCode = 200;
-      responseBody = { title: 'Success', body: doc.data() };
-    } else {
-      statusCode = 404;
-      responseBody = { error: 'Not Found: User with this UID not found.' };
+    if (!docSnap.exists()) {
+      return res.status(404).json({ message: 'User not found' })
     }
-  } catch (error) {
-    statusCode = 500;
-    responseBody = { error: `Internal Server Error: Error fetching from Firestore. ${error.message}` };
-  }
 
-  res.statusCode = statusCode;
-  res.json(responseBody);
-};
+    const data = docSnap.data()
+    return res.status(200).json(data)
+  } catch (error) {
+    return res.status(500).json({ message: 'Error fetching user' })
+  }
+}
+
+export default handler

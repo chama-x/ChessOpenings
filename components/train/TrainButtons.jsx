@@ -1,10 +1,10 @@
-import { useEffect } from 'react';
-import ReactTooltip from 'react-tooltip';
+import { useEffect } from 'react'
+import ReactTooltip from 'react-tooltip'
 
-import { playArrow, replayArrow, shuffle } from '../../data/icons';
-import { useChessboard } from '../../context/board-context';
-import { Button } from '../utils/Button';
-import { SVG } from '../utils/SVG';
+import { playArrow, replayArrow, shuffle } from '../../data/icons'
+import { useChessboard } from '../../context/board-context'
+import { Button } from '../utils/Button'
+import { SVG } from '../utils/SVG'
 
 export function TrainButtons({
   canRetry,
@@ -13,19 +13,19 @@ export function TrainButtons({
   handleTrainStart,
   handleTrainStop,
   openingsFailed,
-  selectedOpenings
+  selectedOpenings,
 }) {
-  const { opening } = useChessboard();
+  const { opening } = useChessboard()
 
   useEffect(() => {
-    ReactTooltip.rebuild();
-  }, [canRetry, opening]);
+    ReactTooltip.rebuild()
+  }, [canRetry, opening])
 
   return (
     <div className="flex">
       <ReactTooltip id="panel-buttons" place="top" effect="solid" backgroundColor="black" />
       {opening ? (
-        <div className="w-full mx-2">
+        <div className="mx-2 w-full">
           <Button fill onClick={handleTrainStop}>
             Quit
           </Button>
@@ -44,44 +44,50 @@ export function TrainButtons({
         />
       )}
     </div>
-  );
+  )
 }
 
 function TrainStartButtons({ handleTrainShuffle, handleTrainStart, selectedOpenings }) {
-  const startDisabled = selectedOpenings.length === 0;
+  const startDisabled = selectedOpenings.length === 0
 
   return (
     <>
-      <div className="w-full mx-2" data-tip="Shuffle & Start" data-for="panel-buttons">
+      <div className="mx-2 w-full" data-tip="Shuffle & Start" data-for="panel-buttons">
         <Button disabled={startDisabled} fill onClick={handleTrainShuffle}>
           <SVG fill="white" icon={shuffle} size={24} />
         </Button>
       </div>
-      <div className="w-full mx-2" data-tip="Start" data-for="panel-buttons">
-        <Button data-tip="Start" data-for="panel-buttons" disabled={startDisabled} fill onClick={handleTrainStart}>
+      <div className="mx-2 w-full" data-tip="Start" data-for="panel-buttons">
+        <Button
+          data-tip="Start"
+          data-for="panel-buttons"
+          disabled={startDisabled}
+          fill
+          onClick={handleTrainStart}
+        >
           <SVG fill="white" icon={playArrow} size={24} />
         </Button>
       </div>
     </>
-  );
+  )
 }
 
 function TrainRetryButtons({ handleRetryFailed, handleTrainStart, openingsFailed }) {
   return (
     <>
-      <div className="w-full mx-2" data-tip="Retry Failed" data-for="panel-buttons">
+      <div className="mx-2 w-full" data-tip="Retry Failed" data-for="panel-buttons">
         <Button disabled={openingsFailed.length === 0} fill onClick={handleRetryFailed}>
           <SVG fill="white" icon={replayArrow} size={24} />
           Failed
         </Button>
       </div>
 
-      <div className="w-full mx-2" data-tip="Retry All" data-for="panel-buttons">
+      <div className="mx-2 w-full" data-tip="Retry All" data-for="panel-buttons">
         <Button fill onClick={handleTrainStart}>
           <SVG fill="white" icon={replayArrow} size={24} />
           All
         </Button>
       </div>
     </>
-  );
+  )
 }

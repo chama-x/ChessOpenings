@@ -1,21 +1,25 @@
-import { useState } from 'react';
-import { OpeningGroup } from '../learn/OpeningGroup';
-import { OpeningTabs } from '../learn/OpeningTabs';
-import { Search } from '../utils/Search';
+import { useState } from 'react'
+import { OpeningGroup } from '../learn/OpeningGroup'
+import { OpeningTabs } from '../learn/OpeningTabs'
+import { Search } from '../utils/Search'
 
 export function OpeningsList({ groups, type }) {
-  const [searchInput, setSearchInput] = useState('');
-  const [tab, setTab] = useState('');
+  const [searchInput, setSearchInput] = useState('')
+  const [tab, setTab] = useState('')
 
   const filteredOpeningGroups = groups
     ?.filter((g) => {
-      const firstMove = g.options[0].value[0].san;
-      return tab === '' || (tab === 'other' && firstMove !== 'e4' && firstMove !== 'd4') || tab === firstMove;
+      const firstMove = g.options[0].value[0].san
+      return (
+        tab === '' ||
+        (tab === 'other' && firstMove !== 'e4' && firstMove !== 'd4') ||
+        tab === firstMove
+      )
     })
     .filter((g) => {
-      const searchWords = searchInput.split(' ');
-      return searchWords.filter((w) => g.label.toLowerCase().includes(w.toLowerCase())).length > 0;
-    });
+      const searchWords = searchInput.split(' ')
+      return searchWords.filter((w) => g.label.toLowerCase().includes(w.toLowerCase())).length > 0
+    })
 
   return (
     <>
@@ -28,7 +32,7 @@ export function OpeningsList({ groups, type }) {
         />
       </div>
 
-      <div className="flex flex-wrap mb-4">
+      <div className="mb-4 flex flex-wrap">
         {filteredOpeningGroups?.length > 0 ? (
           filteredOpeningGroups.map((g) => <OpeningGroup key={g.label} group={g} type={type} />)
         ) : (
@@ -36,5 +40,5 @@ export function OpeningsList({ groups, type }) {
         )}
       </div>
     </>
-  );
+  )
 }

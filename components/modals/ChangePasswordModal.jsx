@@ -1,23 +1,23 @@
-import { useState } from 'react';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { useState } from 'react'
+import { sendPasswordResetEmail } from 'firebase/auth'
 
-import { auth } from '../../firebase';
-import { useData } from '../../context/data-context';
-import { Button, WarningButton } from '../utils/Button';
-import { ErrorMessage } from '../utils/ErrorMessage';
-import { Modal } from '../utils/Modal';
+import { auth } from '../../firebase'
+import { useData } from '../../context/data-context'
+import { Button, WarningButton } from '../utils/Button'
+import { ErrorMessage } from '../utils/ErrorMessage'
+import { Modal } from '../utils/Modal'
 
 export function ChangePasswordModal({ setShowModal }) {
-  const { user } = useData();
-  const [emailSent, setEmailSent] = useState(false);
-  const [requestError, setRequestError] = useState();
+  const { user } = useData()
+  const [emailSent, setEmailSent] = useState(false)
+  const [requestError, setRequestError] = useState()
 
   async function handleSubmit() {
     try {
-      setEmailSent(true);
-      await sendPasswordResetEmail(auth, user?.email);
+      setEmailSent(true)
+      await sendPasswordResetEmail(auth, user?.email)
     } catch (error) {
-      setRequestError(error.message);
+      setRequestError(error.message)
     }
   }
 
@@ -37,8 +37,10 @@ export function ChangePasswordModal({ setShowModal }) {
             <Button onClick={handleSubmit}>Send Password Reset Email</Button>
           </div>
         )}
-        <WarningButton onClick={() => setShowModal(false)}>{emailSent ? 'Close' : 'Cancel'}</WarningButton>
+        <WarningButton onClick={() => setShowModal(false)}>
+          {emailSent ? 'Close' : 'Cancel'}
+        </WarningButton>
       </>
     </Modal>
-  );
+  )
 }

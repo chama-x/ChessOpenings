@@ -18,7 +18,7 @@ export function Input({
       )}
       <input
         id={id}
-        className={`rounded-md indent-2 min-h-[50px] text-black`}
+        className={`min-h-[50px] rounded-md indent-2 text-black`}
         disabled={disabled}
         value={value}
         onChange={onChange}
@@ -28,5 +28,5 @@ export function Input({
         {...props}
       />
     </div>
-  );
+  )
 }

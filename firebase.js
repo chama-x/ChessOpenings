@@ -1,7 +1,7 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
-import { getAuth } from 'firebase/auth';
-import { getStorage } from 'firebase/storage';
+import { initializeApp, getApps } from 'firebase/app'
+import { getAnalytics } from 'firebase/analytics'
+import { getAuth } from 'firebase/auth'
+import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,21 +10,21 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-};
-
-let firebaseApp;
-if (!getApps().length) {
-  firebaseApp = initializeApp(firebaseConfig);
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 
-export const app = firebaseApp;
+let firebaseApp
+if (!getApps().length) {
+  firebaseApp = initializeApp(firebaseConfig)
+}
+
+export const app = firebaseApp
 export const analytics = () => {
   if (typeof window !== 'undefined') {
-    return getAnalytics();
+    return getAnalytics()
   } else {
-    return null;
+    return null
   }
-};
-export const auth = getAuth();
-export const storage = getStorage();
+}
+export const auth = getAuth()
+export const storage = getStorage()

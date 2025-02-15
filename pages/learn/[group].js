@@ -1,7 +1,7 @@
-import { Chessboard } from '../../components/chessboard/Chessboard';
-import { ChessboardWrapper } from '../../components/chessboard/ChessboardWrapper';
-import { LearnSidePanel } from '../../components/learn/LearnSidePanel';
-import { SEO } from '../../components/utils/SEO';
+import { Chessboard } from '../../components/chessboard/Chessboard'
+import { ChessboardWrapper } from '../../components/chessboard/ChessboardWrapper'
+import { LearnSidePanel } from '../../components/learn/LearnSidePanel'
+import { SEO } from '../../components/utils/SEO'
 
 // TODO: custom SEO for each group (custom SEO image too?)
 
@@ -18,5 +18,5 @@ export default function Group() {
         <LearnSidePanel />
       </ChessboardWrapper>
     </>
-  );
+  )
 }

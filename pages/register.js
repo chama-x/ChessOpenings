@@ -1,36 +1,36 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signInWithPopup,
-  GoogleAuthProvider
-} from 'firebase/auth';
-import Filter from 'bad-words';
-import GoogleButton from 'react-google-button';
-import Router from 'next/router';
+  GoogleAuthProvider,
+} from 'firebase/auth'
+import Filter from 'bad-words'
+import GoogleButton from 'react-google-button'
+import Router from 'next/router'
 
-import { auth } from '../firebase';
-import { handleAuthErrorMessage } from '../functions/helpers';
-import { useData } from '../context/data-context';
-import { Button, LinkButton } from '../components/utils/Button';
-import { ErrorMessage } from '../components/utils/ErrorMessage';
-import { Input } from '../components/utils/Input';
-import { Splitter } from '../components/utils/Splitter';
-import { CLEAN_WORDS } from '../data/consts';
-import { SEO } from '../components/utils/SEO';
-import { Logo } from '../components/utils/Logo';
+import { auth } from '../firebase'
+import { handleAuthErrorMessage } from '../functions/helpers'
+import { useData } from '../context/data-context'
+import { Button, LinkButton } from '../components/utils/Button'
+import { ErrorMessage } from '../components/utils/ErrorMessage'
+import { Input } from '../components/utils/Input'
+import { Splitter } from '../components/utils/Splitter'
+import { CLEAN_WORDS } from '../data/consts'
+import { SEO } from '../components/utils/SEO'
+import { Logo } from '../components/utils/Logo'
 
-const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider()
 
 export default function Register() {
-  const { tempDisplayName, setTempDisplayName } = useData();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
-  const wordFilter = new Filter();
-  wordFilter.removeWords(...CLEAN_WORDS);
+  const { tempDisplayName, setTempDisplayName } = useData()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
+  const wordFilter = new Filter()
+  wordFilter.removeWords(...CLEAN_WORDS)
   const isDisabled =
     !email ||
     !password ||
@@ -39,66 +39,68 @@ export default function Register() {
     !tempDisplayName ||
     tempDisplayName.length < 3 ||
     tempDisplayName.toLowerCase().includes('admin') ||
-    wordFilter.isProfane(tempDisplayName);
+    wordFilter.isProfane(tempDisplayName)
 
   const handleEmailAndPasswordRegister = useCallback(async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      sendEmailVerification(user);
-      Router.push('/verify');
+      const { user } = await createUserWithEmailAndPassword(auth, email, password)
+      sendEmailVerification(user)
+      Router.push('/verify')
     } catch (error) {
-      handleAuthErrorMessage(error.code, setError);
+      handleAuthErrorMessage(error.code, setError)
     }
-    setLoading(false);
-  }, [email, password]);
+    setLoading(false)
+  }, [email, password])
 
   // Add event listeners
   useEffect(() => {
     function upHandler({ key }) {
       if (key === 'Enter' && !isDisabled) {
-        handleEmailAndPasswordRegister();
+        handleEmailAndPasswordRegister()
       }
     }
 
-    window.addEventListener('keyup', upHandler);
+    window.addEventListener('keyup', upHandler)
     return () => {
-      window.removeEventListener('keyup', upHandler);
-    };
-  }, [handleEmailAndPasswordRegister, isDisabled]);
+      window.removeEventListener('keyup', upHandler)
+    }
+  }, [handleEmailAndPasswordRegister, isDisabled])
 
   async function handleGoogleSignIn() {
-    setLoading(true);
+    setLoading(true)
     try {
-      await signInWithPopup(auth, provider);
-      Router.push('/');
+      await signInWithPopup(auth, provider)
+      Router.push('/')
     } catch (error) {
-      handleAuthErrorMessage(error.code, setError);
+      handleAuthErrorMessage(error.code, setError)
     }
-    setLoading(false);
+    setLoading(false)
   }
 
   return (
-    <div className="flex flex-col max-w-[512px] mb-10">
+    <div className="mb-10 flex max-w-[512px] flex-col">
       <SEO description="Register with ChessOpenings.co.uk" title="register" path="/register" />
 
-      <div className="flex flex-col items-center my-8">
+      <div className="my-8 flex flex-col items-center">
         <div className="w-20">
           <Logo />
         </div>
-        <h1 className="text-xl xs:text-2xl sm:text-3xl mt-4">Register with ChessOpenings.co.uk</h1>
+        <h1 className="mt-4 text-xl xs:text-2xl sm:text-3xl">Register with ChessOpenings.co.uk</h1>
       </div>
 
       <div className="pb-4">
-        <p className="pb-4">Register an account with ChessOpenings to gain access to more features. Such as:</p>
-        <ul className="list-disc list-inside">
+        <p className="pb-4">
+          Register an account with ChessOpenings to gain access to more features. Such as:
+        </p>
+        <ul className="list-inside list-disc">
           <li className="ml-4">Earn achievements</li>
           <li className="ml-4">Track learned openings and openings statistics</li>
           <li className="ml-4">Attribution for contributed openings</li>
         </ul>
       </div>
 
-      <div className="flex my-4">
+      <div className="my-4 flex">
         <GoogleButton className="w-full rounded-md" type="light" onClick={handleGoogleSignIn} />
       </div>
 
@@ -143,14 +145,14 @@ export default function Register() {
 
       <Splitter />
 
-      <h2 className="text-center text-xl my-4">Already have an account?</h2>
+      <h2 className="my-4 text-center text-xl">Already have an account?</h2>
       <div className="mb-8">
         <LinkButton link="/sign-in" fill>
           Sign In
         </LinkButton>
       </div>
     </div>
-  );
+  )
 }
 
 // export async function getServerSideProps(ctx) {

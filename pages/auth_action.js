@@ -1,88 +1,88 @@
-import { useCallback, useEffect, useState } from 'react';
-import { applyActionCode, confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
-import Router, { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react'
+import { applyActionCode, confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth'
+import Router, { useRouter } from 'next/router'
 
-import { auth } from '../firebase';
-import { handleAuthErrorMessage } from '../functions/helpers';
-import { useData } from '../context/data-context';
-import { Button } from '../components/utils/Button';
-import { SEO } from '../components/utils/SEO';
-import { Input } from '../components/utils/Input';
-import { Logo } from '../components/utils/Logo';
+import { auth } from '../firebase'
+import { handleAuthErrorMessage } from '../functions/helpers'
+import { useData } from '../context/data-context'
+import { Button } from '../components/utils/Button'
+import { SEO } from '../components/utils/SEO'
+import { Input } from '../components/utils/Input'
+import { Logo } from '../components/utils/Logo'
 
 export default function SignIn() {
-  const { setUser } = useData();
-  const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
-  const [verified, setVerified] = useState(false);
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const { setUser } = useData()
+  const [password, setPassword] = useState('')
+  const [passwordConfirm, setPasswordConfirm] = useState('')
+  const [verified, setVerified] = useState(false)
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
   const {
-    query: { mode, oobCode }
-  } = useRouter();
-  const isDisabled = !password || password !== passwordConfirm || password.length < 8;
+    query: { mode, oobCode },
+  } = useRouter()
+  const isDisabled = !password || password !== passwordConfirm || password.length < 8
 
   const handleResetPassword = useCallback(async () => {
-    if (!password || !passwordConfirm) return;
-    setLoading(true);
+    if (!password || !passwordConfirm) return
+    setLoading(true)
     try {
-      await verifyPasswordResetCode(auth, oobCode);
-      await confirmPasswordReset(auth, oobCode, password);
-      Router.push('/sign-in?reset=true');
+      await verifyPasswordResetCode(auth, oobCode)
+      await confirmPasswordReset(auth, oobCode, password)
+      Router.push('/sign-in?reset=true')
     } catch (error) {
-      handleAuthErrorMessage(error.code, setError);
+      handleAuthErrorMessage(error.code, setError)
     }
-    setLoading(false);
-  }, [password, passwordConfirm, oobCode]);
+    setLoading(false)
+  }, [password, passwordConfirm, oobCode])
 
   // Add event listeners
   useEffect(() => {
     function upHandler({ key }) {
       if (key === 'Enter' && !isDisabled) {
-        handleResetPassword();
+        handleResetPassword()
       }
     }
 
-    window.addEventListener('keyup', upHandler);
+    window.addEventListener('keyup', upHandler)
     return () => {
-      window.removeEventListener('keyup', upHandler);
-    };
-  }, [handleResetPassword, isDisabled]);
+      window.removeEventListener('keyup', upHandler)
+    }
+  }, [handleResetPassword, isDisabled])
 
   // verify email
   useEffect(() => {
     async function verifyEmail() {
-      setLoading(true);
+      setLoading(true)
       try {
-        await applyActionCode(auth, oobCode);
-        setVerified(true);
-        setUser((oldUser) => ({ ...oldUser, emailVerified: true }));
+        await applyActionCode(auth, oobCode)
+        setVerified(true)
+        setUser((oldUser) => ({ ...oldUser, emailVerified: true }))
       } catch (error) {
-        handleAuthErrorMessage(error.code, setError);
+        handleAuthErrorMessage(error.code, setError)
       }
-      setLoading(false);
+      setLoading(false)
     }
     if (mode === 'verifyEmail') {
-      verifyEmail();
+      verifyEmail()
     }
-  }, [mode, oobCode, setUser]);
+  }, [mode, oobCode, setUser])
 
   // redirect on verification
   useEffect(() => {
     if (verified) {
-      setTimeout(() => Router.push('/'), 2000);
+      setTimeout(() => Router.push('/'), 2000)
     }
-  }, [verified]);
+  }, [verified])
 
   return (
-    <div className="flex flex-col max-w-[512px] w-full">
+    <div className="flex w-full max-w-[512px] flex-col">
       <SEO description="Email Action" title={mode} path="/auth_action" />
 
-      <div className="flex flex-col items-center my-8">
+      <div className="my-8 flex flex-col items-center">
         <div className="w-20">
           <Logo />
         </div>
-        <h1 className="text-xl xs:text-2xl sm:text-3xl mt-4">
+        <h1 className="mt-4 text-xl xs:text-2xl sm:text-3xl">
           {mode === 'resetPassword' ? 'Reset Password' : 'Email Address Verification'}
         </h1>
       </div>
@@ -112,10 +112,12 @@ export default function SignIn() {
       {mode === 'verifyEmail' && (
         <div>
           {loading && <p>Verifying Email</p>}
-          {!loading && verified && <p>Email has been verified successfully. Thank you. Redirecting...</p>}
+          {!loading && verified && (
+            <p>Email has been verified successfully. Thank you. Redirecting...</p>
+          )}
           {error && <p className="text-center">Error: {error}</p>}
         </div>
       )}
     </div>
-  );
+  )
 }

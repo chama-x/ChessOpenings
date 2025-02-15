@@ -1,46 +1,46 @@
-import { useState } from 'react';
-import { deleteObject, ref } from '@firebase/storage';
-import Cookies from 'js-cookie';
-import Router from 'next/router';
+import { useState } from 'react'
+import { deleteObject, ref } from '@firebase/storage'
+import Cookies from 'js-cookie'
+import Router from 'next/router'
 
-import { storage } from '../../firebase';
-import { useData } from '../../context/data-context';
-import { Button, WarningButton } from '../utils/Button';
-import { ErrorMessage } from '../utils/ErrorMessage';
-import { Input } from '../utils/Input';
-import { Modal } from '../utils/Modal';
+import { storage } from '../../firebase'
+import { useData } from '../../context/data-context'
+import { Button, WarningButton } from '../utils/Button'
+import { ErrorMessage } from '../utils/ErrorMessage'
+import { Input } from '../utils/Input'
+import { Modal } from '../utils/Modal'
 
 export function DeleteAccountModal({ setShowModal }) {
-  const { clearUser, user } = useData();
-  const [confirmation, setConfirmation] = useState('');
-  const [deleting, setDeleting] = useState(false);
-  const [requestError, setRequestError] = useState();
+  const { clearUser, user } = useData()
+  const [confirmation, setConfirmation] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [requestError, setRequestError] = useState()
 
   async function handleSubmit() {
-    setDeleting(true);
+    setDeleting(true)
     try {
       // delete user and userData
-      const uid = user.uid;
-      const token = await user.getIdToken();
-      Cookies.set('idToken', JSON.stringify(token));
+      const uid = user.uid
+      const token = await user.getIdToken()
+      Cookies.set('idToken', JSON.stringify(token))
       const res = await fetch('/api/user', {
-        method: 'DELETE'
-      });
+        method: 'DELETE',
+      })
       if (res.ok) {
         // attempt display picture deletion
-        await deleteObject(ref(storage, `displayPictures/${uid}`));
+        await deleteObject(ref(storage, `displayPictures/${uid}`))
         // delete locally stored data
-        clearUser();
-        Router.push('/');
+        clearUser()
+        Router.push('/')
       } else {
-        const resJson = await res.json();
-        setRequestError(resJson.error);
+        const resJson = await res.json()
+        setRequestError(resJson.error)
       }
     } catch (error) {
       if (error.code === 'storage/object-not-found') {
-        clearUser();
-        Router.push('/');
-      } else setRequestError(error.message);
+        clearUser()
+        Router.push('/')
+      } else setRequestError(error.message)
     }
   }
 
@@ -49,12 +49,14 @@ export function DeleteAccountModal({ setShowModal }) {
       <>
         {requestError && <ErrorMessage>{requestError}</ErrorMessage>}
 
-        <h2 className="text-xl mb-2">Warning - This action is irreversible.</h2>
+        <h2 className="mb-2 text-xl">Warning - This action is irreversible.</h2>
         <p className="mb-2">
-          Deleting your account will result in all information and statistics about you being deleted. This data cannot
-          be recovered once deleted.
+          Deleting your account will result in all information and statistics about you being
+          deleted. This data cannot be recovered once deleted.
         </p>
-        <p className="mb-2">To continue with account deletion, please type &apos;delete&apos; in the input below.</p>
+        <p className="mb-2">
+          To continue with account deletion, please type &apos;delete&apos; in the input below.
+        </p>
 
         <Input
           id="confirm-account-deletion"
@@ -71,12 +73,16 @@ export function DeleteAccountModal({ setShowModal }) {
             </Button>
           </div>
           <div className="ml-2 w-full">
-            <WarningButton fill onClick={handleSubmit} disabled={confirmation !== 'delete' || deleting}>
+            <WarningButton
+              fill
+              onClick={handleSubmit}
+              disabled={confirmation !== 'delete' || deleting}
+            >
               {deleting ? 'Deleting' : 'Delete Account'}
             </WarningButton>
           </div>
         </div>
       </>
     </Modal>
-  );
+  )
 }

@@ -1,24 +1,29 @@
-import { clear } from '../../data/icons';
-import { SVG } from './SVG';
+import { clear } from '../../data/icons'
+import { SVG } from './SVG'
 
 export function Modal({ title, onClose, children }) {
   return (
     <>
-      <div className="w-full h-full fixed top-0 left-0 z-30 flex justify-center items-center">
-        <div className="w-full max-w-4xl mx-4">
-          <div className="flex items-center bg-tertiary text-center rounded-t-md">
-            <div className="w-14 flex items-center" />
-            <h1 className="w-full my-4 text-xl lg:text-2xl">{title}</h1>
-            <div className="w-14 flex items-center">
+      <div className="fixed left-0 top-0 z-30 flex h-full w-full items-center justify-center">
+        <div className="mx-4 w-full max-w-4xl">
+          <div className="flex items-center rounded-t-md bg-tertiary text-center">
+            <div className="flex w-14 items-center" />
+            <h1 className="my-4 w-full text-xl lg:text-2xl">{title}</h1>
+            <div className="flex w-14 items-center">
               <button onClick={onClose}>
                 <SVG icon={clear} dimOnHover />
               </button>
             </div>
           </div>
-          <div className="max-h-[70vh] p-4 bg-primary overflow-y-auto break-words rounded-b-md">{children}</div>
+          <div className="max-h-[70vh] overflow-y-auto break-words rounded-b-md bg-primary p-4">
+            {children}
+          </div>
         </div>
       </div>
-      <div className="w-full h-full fixed top-0 left-0 bg-black opacity-70 z-20" onClick={onClose} />
+      <div
+        className="fixed left-0 top-0 z-20 h-full w-full bg-black opacity-70"
+        onClick={onClose}
+      />
     </>
-  );
+  )
 }

@@ -1,35 +1,21 @@
-import { sortOpeningsIntoGroups } from '../../../functions/helpers';
-import { storage } from '../../../firebaseAdmin';
+import { db } from '@/lib/firebase'
+import { collection, getDocs } from 'firebase/firestore'
 
-export default async (req, res) => {
-  let statusCode = 500;
-  let responseBody = { error: 'Internal Server Error: Encountered an unknown error' };
-
-  if (
-    !req.headers.referer.includes('http://localhost:3000') &&
-    !req.headers.referer.includes('https://chessopenings.co.uk')
-  ) {
-    res.statusCode = 401;
-    res.json({ error: 'Unauthorized: Unauthorized host' });
-    return res;
+const handler = async (req, res) => {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' })
   }
 
   try {
-    const doc = await storage.collection('data').doc('traps').get();
-
-    if (doc.exists) {
-      const trapGroups = sortOpeningsIntoGroups(doc.data().data);
-      statusCode = 200;
-      responseBody = { title: 'Success', body: trapGroups };
-    } else {
-      statusCode = 404;
-      responseBody = { error: 'Not Found: Cannot find traps in Firestore.' };
-    }
+    const querySnapshot = await getDocs(collection(db, 'traps'))
+    const traps = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    return res.status(200).json(traps)
   } catch (error) {
-    statusCode = 500;
-    responseBody = { error: `Internal Server Error: Error fetching from Firestore. ${error.message}` };
+    return res.status(500).json({ message: 'Error fetching traps' })
   }
+}
 
-  res.statusCode = statusCode;
-  res.json(responseBody);
-};
+export default handler

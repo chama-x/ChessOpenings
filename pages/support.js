@@ -1,20 +1,24 @@
-import { contributeOutlined } from '../data/icons';
-import { Header } from '../components/utils/Header';
-import { HomeSocial } from '../components/home/HomeSocial';
-import { SEO } from '../components/utils/SEO';
-import { ExternalLinkButton } from '../components/utils/Button';
-import { KOFI_LINK, PAYPAL_LINK } from '../data/consts';
+import { contributeOutlined } from '../data/icons'
+import { Header } from '../components/utils/Header'
+import { HomeSocial } from '../components/home/HomeSocial'
+import { SEO } from '../components/utils/SEO'
+import { ExternalLinkButton } from '../components/utils/Button'
+import { KOFI_LINK, PAYPAL_LINK } from '../data/consts'
 
 export default function Support() {
   return (
     <div className="container flex flex-col">
-      <SEO description="Support the site by donating to keep it running." title="support" path="/support" />
+      <SEO
+        description="Support the site by donating to keep it running."
+        title="support"
+        path="/support"
+      />
       <Header icon={contributeOutlined} heading="Support ChessOpenings" />
 
       <p className="mb-4">
-        This site and its contents are provided to you completely for free and with no annoying advertisements. If you
-        enjoy and learn from it, please consider donating to support the site and keep it running. Even if its just a
-        coffee to keep the admin running.
+        This site and its contents are provided to you completely for free and with no annoying
+        advertisements. If you enjoy and learn from it, please consider donating to support the site
+        and keep it running. Even if its just a coffee to keep the admin running.
       </p>
 
       <div className="flex">
@@ -47,20 +51,22 @@ export default function Support() {
         </ExternalLinkButton>
       </div>
 
-      <h2 className="flex items-center text-xl sm:text-2xl lg:text-4xl mt-8 mb-4">Not able to support right now?</h2>
+      <h2 className="mb-4 mt-8 flex items-center text-xl sm:text-2xl lg:text-4xl">
+        Not able to support right now?
+      </h2>
 
       <p className="mb-4">
-        No worries at all, you can still send messages of support and join the growing community of users on the
-        ChessOpenings Discord server. There you can let us know what you like and what features you enjoy on the site so
-        we can work on adding even more.
+        No worries at all, you can still send messages of support and join the growing community of
+        users on the ChessOpenings Discord server. There you can let us know what you like and what
+        features you enjoy on the site so we can work on adding even more.
       </p>
       <p className="mb-4">
-        Additionally you can tell your friends, make a post on social media / reddit, and help spread awareness of the
-        site. That is the best way to help the site grow!
+        Additionally you can tell your friends, make a post on social media / reddit, and help
+        spread awareness of the site. That is the best way to help the site grow!
       </p>
       <div className="flex justify-center">
         <HomeSocial />
       </div>
     </div>
-  );
+  )
 }

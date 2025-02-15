@@ -4,13 +4,8 @@
     "es2021": true,
     "node": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:import/recommended"
-  ],
-  "plugins": ["react", "react-hooks", "import"],
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "plugins": ["@typescript-eslint", "prettier"],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -19,11 +14,12 @@
     "sourceType": "module"
   },
   "rules": {
-    "semi": ["error", "always"],
-    "multiline-ternary": "off",
+    "prettier/prettier": ["error", {}, { "usePrettierrc": true }],
+    "@typescript-eslint/no-unused-vars": ["warn"],
+    "@typescript-eslint/no-explicit-any": "warn",
     "react/display-name": "off",
-    "react/prop-types": "off",
-    "react/react-in-jsx-scope": "off"
+    "react/no-unescaped-entities": "off",
+    "@next/next/no-img-element": "warn"
   },
   "settings": {
     "react": {

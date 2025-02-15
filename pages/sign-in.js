@@ -1,85 +1,87 @@
-import { useState, useEffect, useCallback } from 'react';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import GoogleButton from 'react-google-button';
-import Link from 'next/link';
-import Router, { useRouter } from 'next/router';
+import { useState, useEffect, useCallback } from 'react'
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import GoogleButton from 'react-google-button'
+import Link from 'next/link'
+import Router, { useRouter } from 'next/router'
 
-import { auth } from '../firebase';
-import { handleAuthErrorMessage } from '../functions/helpers';
-import { useData } from '../context/data-context';
-import { Button, LinkButton } from '../components/utils/Button';
-import { ErrorMessage } from '../components/utils/ErrorMessage';
-import { Input } from '../components/utils/Input';
-import { Splitter } from '../components/utils/Splitter';
-import { SEO } from '../components/utils/SEO';
-import { Logo } from '../components/utils/Logo';
+import { auth } from '../firebase'
+import { handleAuthErrorMessage } from '../functions/helpers'
+import { useData } from '../context/data-context'
+import { Button, LinkButton } from '../components/utils/Button'
+import { ErrorMessage } from '../components/utils/ErrorMessage'
+import { Input } from '../components/utils/Input'
+import { Splitter } from '../components/utils/Splitter'
+import { SEO } from '../components/utils/SEO'
+import { Logo } from '../components/utils/Logo'
 
-const provider = new GoogleAuthProvider();
+const provider = new GoogleAuthProvider()
 
 export default function SignIn() {
-  const { userData } = useData();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const { userData } = useData()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState()
+  const [loading, setLoading] = useState(false)
   const {
-    query: { redirect, reset }
-  } = useRouter();
+    query: { redirect, reset },
+  } = useRouter()
 
   const handleEmailAndPasswordSignIn = useCallback(async () => {
-    if (!email || !password) return;
-    setLoading(true);
+    if (!email || !password) return
+    setLoading(true)
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password)
     } catch (error) {
-      handleAuthErrorMessage(error.code, setError);
+      handleAuthErrorMessage(error.code, setError)
     }
-    setLoading(false);
-  }, [email, password]);
+    setLoading(false)
+  }, [email, password])
 
   // Add event listeners
   useEffect(() => {
     function upHandler({ key }) {
       if (key === 'Enter') {
-        handleEmailAndPasswordSignIn();
+        handleEmailAndPasswordSignIn()
       }
     }
 
-    window.addEventListener('keyup', upHandler);
+    window.addEventListener('keyup', upHandler)
     return () => {
-      window.removeEventListener('keyup', upHandler);
-    };
-  }, [handleEmailAndPasswordSignIn]);
+      window.removeEventListener('keyup', upHandler)
+    }
+  }, [handleEmailAndPasswordSignIn])
 
   // Redirect once user data is received
   useEffect(() => {
-    if (userData) Router.push(redirect?.[0] === '/' ? redirect : '/');
-  }, [userData, redirect]);
+    if (userData) Router.push(redirect?.[0] === '/' ? redirect : '/')
+  }, [userData, redirect])
 
   async function handleGoogleSignIn() {
-    setLoading(true);
+    setLoading(true)
     try {
-      await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, provider)
     } catch (error) {
-      handleAuthErrorMessage(error.code, setError);
+      handleAuthErrorMessage(error.code, setError)
     }
-    setLoading(false);
+    setLoading(false)
   }
 
   return (
-    <div className="flex flex-col max-w-[512px] mb-10">
+    <div className="mb-10 flex max-w-[512px] flex-col">
       <SEO description="Sign in to ChessOpenings.co.uk" title="sign in" path="/sign-in" />
 
-      <div className="flex flex-col items-center  my-8">
+      <div className="my-8 flex flex-col  items-center">
         <div className="w-20">
           <Logo />
         </div>
-        <h1 className="text-xl xs:text-2xl sm:text-3xl mt-4">Sign In to ChessOpenings.co.uk</h1>
+        <h1 className="mt-4 text-xl xs:text-2xl sm:text-3xl">Sign In to ChessOpenings.co.uk</h1>
       </div>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
       {/* // TODO - info warning component instead or error warning */}
-      {reset && <p className="text-center">Password successfully reset. Please sign in with new password</p>}
+      {reset && (
+        <p className="text-center">Password successfully reset. Please sign in with new password</p>
+      )}
 
       <Input
         autoFocus
@@ -119,10 +121,12 @@ export default function SignIn() {
         <GoogleButton className="w-full rounded-md" type="light" onClick={handleGoogleSignIn} />
       </div>
 
-      <h1 className="text-lg mt-4">Don&apos;t have an account yet?</h1>
+      <h1 className="mt-4 text-lg">Don&apos;t have an account yet?</h1>
       <div className="pb-4">
-        <p className="pb-4">Register an account with ChessOpenings to gain access to more features. Such as:</p>
-        <ul className="list-disc list-inside">
+        <p className="pb-4">
+          Register an account with ChessOpenings to gain access to more features. Such as:
+        </p>
+        <ul className="list-inside list-disc">
           <li className="ml-4">Earn achievements</li>
           <li className="ml-4">Track learned openings and openings statistics</li>
           <li className="ml-4">Attribution for contributed openings</li>
@@ -133,7 +137,7 @@ export default function SignIn() {
         Register
       </LinkButton>
     </div>
-  );
+  )
 }
 
 // export async function getServerSideProps(ctx) {

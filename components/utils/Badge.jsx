@@ -2,13 +2,13 @@ export function Badge({ status }) {
   function getBackground() {
     switch (status) {
       case 'CLOSED':
-        return 'bg-error';
+        return 'bg-error'
       case 'MERGED':
-        return 'bg-success';
+        return 'bg-success'
       default:
-        return 'bg-theme';
+        return 'bg-theme'
     }
   }
 
-  return <div className={`text-center rounded-md w-32 p-2 ${getBackground()}`}>{status}</div>;
+  return <div className={`w-32 rounded-md p-2 text-center ${getBackground()}`}>{status}</div>
 }

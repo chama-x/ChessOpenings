@@ -1,4 +1,4 @@
-const Sitemap = () => {};
+const Sitemap = () => {}
 
 export const getServerSideProps = ({ res }) => {
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -41,15 +41,15 @@ export const getServerSideProps = ({ res }) => {
         <priority>0.75</priority>
       </url>
     </urlset>
-  `;
+  `
 
-  res.setHeader('Content-Type', 'text/xml');
-  res.write(sitemap);
-  res.end();
+  res.setHeader('Content-Type', 'text/xml')
+  res.write(sitemap)
+  res.end()
 
   return {
-    props: {}
-  };
-};
+    props: {},
+  }
+}
 
-export default Sitemap;
+export default Sitemap

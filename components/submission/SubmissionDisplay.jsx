@@ -1,5 +1,5 @@
-import { Badge } from '../utils/Badge';
-import { SubmissionData } from './SubmissionData';
+import { Badge } from '../utils/Badge'
+import { SubmissionData } from './SubmissionData'
 
 export function SubmissionDisplay({ history, opening, submission }) {
   return (
@@ -9,5 +9,5 @@ export function SubmissionDisplay({ history, opening, submission }) {
       </div>
       <SubmissionData history={history} opening={opening} submission={submission} />
     </>
-  );
+  )
 }

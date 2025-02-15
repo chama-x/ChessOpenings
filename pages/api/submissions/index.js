@@ -1,34 +1,21 @@
-import { storage } from '../../../firebaseAdmin';
+import { db } from '@/lib/firebase'
+import { collection, getDocs } from 'firebase/firestore'
 
-export default async (req, res) => {
-  let statusCode = 500;
-  let responseBody = { error: 'Internal Server Error: Encountered an unknown error' };
-
-  if (
-    !req.headers.referer.includes('http://localhost:3000') &&
-    !req.headers.referer.includes('https://chessopenings.co.uk')
-  ) {
-    res.statusCode = 401;
-    res.json({ error: 'Unauthorized: Unauthorized host' });
-    return res;
+const handler = async (req, res) => {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' })
   }
 
   try {
-    const doc = await storage.collection('data').doc('submissions').get();
-
-    if (doc.exists) {
-      const sortedSubmissions = doc.data().data.sort((a, b) => (a.timestamp._seconds > b.timestamp._seconds ? -1 : 1));
-      statusCode = 200;
-      responseBody = { title: 'Success', body: sortedSubmissions };
-    } else {
-      statusCode = 404;
-      responseBody = { error: 'Not Found: Cannot find submissions in Firestore.' };
-    }
+    const querySnapshot = await getDocs(collection(db, 'submissions'))
+    const submissions = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    return res.status(200).json(submissions)
   } catch (error) {
-    statusCode = 500;
-    responseBody = { error: `Internal Server Error: Error fetching from Firestore. ${error.message}` };
+    return res.status(500).json({ message: 'Error fetching submissions' })
   }
+}
 
-  res.statusCode = statusCode;
-  res.json(responseBody);
-};
+export default handler
